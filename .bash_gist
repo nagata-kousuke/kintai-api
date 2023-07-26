@@ -1,0 +1,1177 @@
+####################
+#  説明不要 ショートカット
+###################
+
+alias ls='ls --color=auto'
+alias l='clear && ll'
+# alias l='clear && ls'
+
+alias ll='ls -la'
+alias cc='clear'
+
+# ディレクトリー移動
+alias ..="cd .."
+alias ...="cd ../.."
+alias ....="cd ../../.."
+alias .....="cd ../../../.."
+alias ......="cd ../../../../.."
+
+# # よく利用するディレクトリの頭文字の連結
+# alias abc='cd ~/aaa/bbb/ccc'
+
+
+# git系
+alias g='git'
+alias ga='git add'
+alias gd='git diff'
+alias gs='git status'
+alias gpush='git push'
+alias gp='git pull'
+alias gb='git branch'
+alias gst='git stash'
+alias gf='git fetch'
+alias gc='git commit'
+alias gt='git rev-parse --show-toplevel'
+alias gcd='git checkout develop'
+
+# git checkout
+gco() {
+  git checkout -b feature/$1 origin/feature/$1
+}
+
+gcod() {
+  git checkout -b feature/$1 origin/develop
+}
+
+
+####################
+#  alias 人それぞれ
+###################
+
+# apt
+alias agi='sudo apt install'
+alias agr='sudo apt remove'
+alias agu='sudo apt update'
+
+# apt
+alias ag='sudo apt'
+alias agi='sudo apt install'
+alias agr='sudo apt remove'
+alias agu='sudo apt update'
+
+# # 人それぞれ
+# alias top='htop'
+# alias top='gtop'
+# alias top='vtop'
+# alias top='gotop'
+# 別名
+alias mem='top -o rsize'
+alias cpu='top -o cpu'
+
+# # a
+alias a='ansible'
+# # b
+
+# c
+# alias c='curl'
+# alias c='clear'
+alias c='cat'
+# alias c='pbcopy' # これは便利そう
+
+# d
+alias d='docker' # これ使ってます
+# alias d='du -h -d=1'
+# alias d='less' # display?
+alias dc='docker-compose'
+alias dp='docker system prune --all --volumes'
+
+# e
+
+# f
+alias f='find . -name'
+
+# g
+# alias g='grep --color=auto'
+alias g='grep' # 鉄板その2
+
+# h
+# alias h='cd ~' # home的な
+# alias h='git reset HEAD' # head的な
+alias h='history | grep'
+# alias h='history'
+# alias h='tldr' # これは普通に便利そう。help?
+
+# i
+alias i='sudo apt install --yes'
+
+#j
+
+# k
+alias k='kill -9'
+# alias k='kubectl' # 使ってる
+
+# l
+
+# m
+alias m='make'
+# alias m='mkdir' # 個人的にはこれかなあ
+
+# n
+alias n='npm' # 実はnodeよりもこっちの方が多く打つ？
+# alias n='sudo netctl'
+
+# o
+
+# p
+# alias p='ping' # 意外と激戦区？
+# alias p='popd' # zshのAUTO_PUSHDとセットかな？
+alias p='pwd'
+# alias p='pacman' # ゲームじゃないよ
+
+# q
+alias q='exit' # これ以外あんまない
+
+# r
+# alias r='cd / && ls -a' # rootのr
+# alias r='rm -i'
+# alias r='screen -D -R'
+# alias r='source ~/.zshrc' # reload?
+
+# s
+alias s='ssh'
+# alias s='sudo su'
+# alias s='sudo'
+# alias s='svn'
+
+# t
+# alias t='date +"%H%M%S"' # time
+alias t='terraform'
+# alias t='tmux -2'
+# alias t='tmux attach'
+# alias t='tmux new-session -A -s main'
+# alias t='tmux'
+# alias t='tree -C'
+# alias t='tree -Cfh'
+# alias t='tree -I "node_modules"' # 私のかな？
+# alias t='tree -a --ignore ".git|node_modules|bower_components|.DS_Store" -l 3' # 強化版
+
+# u
+alias u='cd ..' # up
+
+# v
+alias v='vi'
+alias v='vim'
+
+# w 特になし
+
+# x
+alias x='exit'
+
+# y
+alias y='yarn' # これ使おう
+
+# z
+
+# カレントディレクトリのパスをクリップボードにコピー(cpwd, copypathなど)
+alias pwdc='pwd | tr -d "\n" | pbcopy'
+
+alias chmod='chmod --preserve-root'
+alias rm='rm -i'
+alias psa='ps aux'
+alias vi=vim
+alias sr='source ~/.bash_profile'
+alias gs='git status'
+alias gfa='git fetch'
+
+####################
+#  indigo 独自
+###################
+
+# dockerの省略
+# alias dr='d restart'
+# alias dl='d logs'
+
+# make系
+mku() {
+    cd ~/services
+    make up
+    cd -
+}
+
+mkd() {
+    cd ~/services
+    make down
+    cd -
+}
+
+mkb() {
+    make config
+    make share
+    cd ~/services
+    dp
+    make build
+    cd -
+}
+
+mkbb() {
+    make config
+    make share
+    cd ~/services
+    dp
+    make build
+    mkdir -p ./util-containers/elasticsearch/data/nodes
+    sudo chown -R 1000:1000 ./util-containers/elasticsearch/data/nodes    
+    cd -
+}
+
+# medicalを初期化
+function dc() {
+    docker container prune
+    docker image prune
+    docker volume prune
+    cd ~/services/packages/api/medical
+    make init-seed
+    make es-ready
+    make es-reindex
+}
+
+# Change Owner make系したあと権限がrootになるのでindigoに戻す
+co() {
+    cd ~
+    sudo chown indigo:indigo -R ./services
+    cd -
+}
+
+#migrate
+migrate() {
+  docker-compose run --rm migrate bash -c "make migrate"
+}
+
+#mockサーバー系
+mock() {
+    cd ~/services/packages/schema
+}
+
+mock_run() {
+    mock
+    make run api=medical port=8080
+}
+
+mock_test() {
+    curl http://127.0.0.1:8080/account/user
+}
+
+# Directory移動ショートカット
+medical() {
+    cd ~/services/packages/webapp/medical
+}
+
+medical-api() {
+    cd ~/services/packages/api/medical
+}
+
+
+# apiテスト用ヘルプコマンド
+apitests() {
+    medical-api
+    make test-seed
+    cd -
+}
+
+apitestt() {
+    medical-api
+    make teardown
+    cd -
+}
+
+apitest() {
+    medical-api
+    #go test -timeout 30s -run ^TestGetPlanRestrictPidList$ ./api/restricthospitalizationssummary -v
+    go test -v -cover -coverprofile coverage.log ./api/$1/... && go tool cover -html=coverage.log -o coverage.html
+    cd -
+}
+
+apitestd() {
+    medical-api
+    go test -timeout 30s -run ^.*$ ./api/$1 -v
+    cd -
+}
+
+apitestdr() {
+    apitestd restricthospitalizationssummary
+}
+
+apitest1() {
+    medical-api
+    go test -timeout 30s -run ^$2$ ./api/$1 -v
+    cd -
+}
+
+apitest1r() {
+    apitest1 restricthospitalizationssummary TestGetPlanRestrictPidList
+}
+
+apitestr() {
+    apitest restricthospitalizations
+}
+
+#git系
+git_stash() {
+    git stash save --keep-index --include-untracked
+}
+
+git_discard() {
+    cd ~/services
+    git checkout -- .
+    cd -
+}
+
+git_checkout() {
+    git_discard
+    cd ~/services
+    git checkout feature/$1
+    git pull
+    cd -
+}
+
+# git系
+function save() {
+    git stash -u
+}
+
+function load() {
+    git stash pop
+}
+
+gsave() {
+    cd ~/services
+    save
+    git checkout develop
+    git pull
+    cd -
+}
+
+gload() {
+    cd ~/services
+    echo "checkout"
+    git checkout feature/$1
+    echo "rebase"
+    git rebase develop
+    load
+    cd -
+}
+
+gitc() {
+    git clean -df
+}
+
+# stashして、developをcheckoutして、gitpullして
+# 引数に渡したブランチをチェックアウトして、developとmergeして、
+# statshした最初のやつを戻す
+gitr() {
+    gsave
+    gload $1
+}
+
+#上のに 最初と最後にmkd mkuをして、kibanaのgfixもする
+gitb() {
+    mkd
+    gsave
+    gload $1
+    gfix
+    mku
+    dcps
+}
+
+#elasticsearchやkibanaが立ち上がらないとき
+gfix() {
+    cd ~/
+    co services
+    cd ~/services
+    mkdir -p ./util-containers/elasticsearch/data/nodes
+    sudo chown -R 1000:1000 ./util-containers/elasticsearch/data/nodes
+    cd ~/services
+    dr elasticsearch
+}
+
+# alias dr='docker restart migrate.indigo.test'
+
+# 現在の最新を取得先にstashしてpullして、stashを戻す
+gps() {
+    git stash -u
+    git pull
+    git stash pop
+}
+
+git_ignore() {
+    git update-index --assume-unchanged $1
+}
+
+git_unignore() {
+    git update-index --no-assume-unchanged $1
+}
+
+patch() {
+    git apply ../frontadl.patch
+}
+
+path_file() {
+    git apply ../$1
+}
+
+# Docker Compose PSの略
+dcps() {
+    cd ~/services
+    docker-compose ps
+    cd -
+}
+
+#docker restart
+dcr() {
+    cd ~/services
+    docker-compose restart $1
+    cd -
+}
+
+#docker logs
+dcl() {
+    cd ~/services
+    docker-compose logs $1
+    cd -
+}
+
+#docker restart
+dr() {
+    docker restart $1.indigo.test
+}
+
+#docker logs
+dl() {
+    docker logs $1.indigo.test
+}
+
+#docker exec (login)
+de() {
+    docker exec -it $1.indigo.test /bin/bash
+}
+
+#docker exec
+dem() {
+    docker exec -it medical.indigo.test $1
+}
+
+#Model Init
+mi() {
+    # Model gen
+    docker exec -it schema.indigo.test bash -c "make build"
+    docker exec -it medical-api.indigo.test bash -c "cd medical && make api-doc && make modelgen"
+
+    # API gen
+    docker exec -it schema.indigo.test bash -c "make build"
+    docker exec -it medical-api.indigo.test bash -c "cd medical && make api-doc && make codegen tag=comman"
+    docker exec -it medical-api.indigo.test bash -c "cd medical && make api-doc && make codegen tag=medical"
+    docker exec -it medical-api.indigo.test bash -c "cd medical && make api-doc && make codegen tag=orca"
+    docker exec -it medical-api.indigo.test bash -c "cd medical && make api-doc && make codegen tag=tenant"
+    docker exec -it medical-api.indigo.test bash -c "cd medical && make api-doc && make codegen tag=receipt"
+    docker exec -it medical-api.indigo.test bash -c "cd medical && make api-doc && make codegen tag=datahub"
+
+    ### Access into translation container
+    docker exec -it translation.indigo.test bash -c "make build"
+
+    ### Access into container need translation
+    # docker exec -it <container> bash -c "make bundle"
+    # docker exec -it receipt-api.indigo.test bash -c "make bundle"
+    docker exec -it api.indigo.test bash -c "make bundle"
+    docker exec -it datahub-api.indigo.test bash -c "make bundle"
+    docker exec -it orca-api.indigo.test bash -c "make bundle"
+    docker exec -it orca.indigo.test bash -c "make bundle"
+    docker exec -it medical-api.indigo.test bash -c "make bundle"
+    docker exec -it medical.indigo.test bash -c "make bundle"
+}
+
+#Status check
+sc() {
+    echo '----------------'
+    echo 'api health check'
+    curl -k https://medical-api.indigo.test/api/v1/health
+    echo ''
+    echo '----------------'
+    echo 'tenant check demo-tenant'
+    curl -k https://api.indigo.test/api/v1/tenants/code/demo-tenant
+    echo ''
+    echo '----------------'
+    echo 'tenant check playground'
+    curl -k https://api.indigo.test/api/v1/tenants/code/playground
+    echo ''
+    echo '----------------'
+    echo 'kibana'
+    curl -k https://kibana.indigo.test/
+    echo ''
+    echo '----------------'
+}
+
+#orca server
+os() {
+    docker exec -it receipt-api.indigo.test bash
+    cd receipt/workers/pushclient/
+    SKIP_CALL_FACILITY=yes FACILITY_ID=btra3del1us65b40dv4g TENANT_ID=btra3del1us65b40dv40 go run ./...
+}
+
+#orca client
+oc() {
+    docker exec -it medical-api.indigo.test bash
+    cd medical/workers/pubsubclient/
+    SKIP_CALL_FACILITY=yes go run main.go task.go
+}
+
+#medical test
+dem() {
+    docker exec -it medical.indigo.test bash -c cd medical && yarn test-exclude
+}
+
+#medical test
+mt() {
+    yarn test-exclude -o
+}
+
+#git系
+gitr() {
+  git reset --hard
+}
+
+#model系
+makegen() {
+    docker exec -it schema.indigo.test bash -c "make build"
+    docker exec -it medical-api.indigo.test bash -c "cd medical && make api-doc && make modelgen"
+    docker exec -it medical-api.indigo.test bash -c "cd medical && make api-doc && make codegen tag=medical"
+}
+
+#docker stop
+stopapi() {
+    docker stop console.indigo.test
+    docker stop designsystem.indigo.test
+    docker stop docs.indigo.dev
+    docker stop kibana.indigo.test
+    docker stop migrate.indigo.test
+    docker stop orca-api.indigo
+    docker stop orca.indigo.test
+    docker stop postgresql.indigo.test
+    docker stop receipt-api.indigo
+    docker stop redis.indigo.test
+    docker stop schema.indigo.test
+    docker stop smtp.indigo.test
+    docker stop translation.indigo.test
+}
+
+#docker stop
+stop_all() {
+    docker stop api.indigo.test
+    docker stop console.indigo.test
+    docker stop datahub-api.indigo
+    docker stop designsystem.indigo.test
+    docker stop docs.indigo.dev
+    docker stop elasticsearch.indigo.test
+    docker stop kibana.indigo.test
+    docker stop medical-api.indigo
+    docker stop medical.indigo.test
+    docker stop migrate.indigo.test
+    docker stop orca-api.indigo
+    docker stop orca.indigo.test
+    docker stop postgresql.indigo.test
+    docker stop proxy.indigo.test
+    docker stop receipt-api.indigo
+    docker stop redis.indigo.test
+    docker stop schema.indigo.test
+    docker stop smtp.indigo.test
+    docker stop translation.indigo.test
+}
+
+#cache_del
+cache_del() {
+    cd ~/services
+    docker rm proxy.indigo.test
+    docker-compose build proxy
+    docker-compose up -d proxy
+
+    docker rm medical.indigo.test
+    docker-compose build webapp-medical
+    docker-compose up -d webapp-medical
+    cd -
+}
+
+#medical
+mfa() {
+    cd ~/services/packages/api/medical
+    golangci-lint run
+    cd -
+}
+
+#medical
+mfw() {
+    medical
+    ../node_modules/.bin/tsc --noEmit
+    cd -
+}
+
+#git
+gitrd() {
+    git branch -a | grep '$1' | grep remotes/origin | sed -e 's% *remotes/origin/%%'
+}
+
+gitrdf() {
+    git branch -a | grep '$1' | grep remotes/origin | sed -e 's% *remotes/origin/%%' | xargs -I% git push origin :% --no-verify
+}
+
+#schema
+smt() {
+    cd ~/services/packages/schema
+    make test
+    make build
+    docker-compose exec api-medical /bin/bash
+    make api-doc
+    make modelgen
+    cd -
+}
+
+#schema
+smte() {
+    cd ~/services/packages/schema
+    make test
+    make build
+    docker-compose exec api-medical /bin/bash
+    make api-doc
+    make modelgen
+    make codegen tag=$1
+    cd -
+}
+
+#web側のコンポーネントのスケルトン作成コマンド
+add-component() {
+    cd ~/poc-playground/sti-sample
+    hygen web components --componentNamespace $1 --componentName $2
+    cd -
+}
+
+#web側のコンポーネントのスケルトン一括作成コマンド
+add-components() {
+    CSV_FILE=$1
+    cd ~/poc-playground/sti-sample
+    for line in `cat ${CSV_FILE}`
+    do
+        column1=$(echo ${line} | cut -d , -f 1)
+        column2=$(echo ${line} | cut -d , -f 2)
+        hygen web components --componentNamespace ${column1} --componentName ${column2}
+    done
+    cd -
+}
+
+#web側のコンテナのスケルトン作成コマンド
+add-container() {
+    cd ~/poc-playground/sti-sample
+    hygen web container --componentNamespace $1 --componentName $2
+    cd -
+}
+
+#web側のコンポーネントのスケルトン一括作成コマンド
+add-containers() {
+    CSV_FILE=$1
+    cd ~/poc-playground/sti-sample
+    for line in `cat ${CSV_FILE}`
+    do
+        column1=$(echo ${line} | cut -d , -f 1)
+        column2=$(echo ${line} | cut -d , -f 2)
+        hygen web container --componentNamespace ${column1} --componentName ${column2}
+    done
+    cd -
+}
+
+#web側のコンポーネントのスケルトン作成コマンド
+add-dummy() {
+    cd ~/poc-playground/sti-sample
+    hygen web dummy --componentNamespace $1 --componentName $2
+    cd -
+}
+
+#web側のコンポーネントのスケルトン一括作成コマンド
+add-dummys() {
+    CSV_FILE=$1
+    cd ~/poc-playground/sti-sample
+    for line in `cat ${CSV_FILE}`
+    do
+        column1=$(echo ${line} | cut -d , -f 1)
+        column2=$(echo ${line} | cut -d , -f 2)
+        hygen web dummy --componentNamespace ${column1} --componentName ${column2}
+    done
+    cd -
+}
+
+#postgresqlのdrop
+dbreset() {
+    docker-compose exec -T migrate bash -c "cd postgres && env ENV=develop make drop-tenant"
+    docker-compose exec -T migrate bash -c "cd postgres && env ENV=test make drop-tenant"
+    docker-compose exec -T migrate bash -c "cd postgres && env ENV=develop make migrate-tenant"
+    docker-compose exec -T migrate bash -c "cd postgres && env ENV=test make migrate-tenant"
+}
+
+dhreset() {
+    docker-compose exec -T migrate bash -c "cd postgres && env ENV=develop make drop-datahub"
+    docker-compose exec -T migrate bash -c "cd postgres && env ENV=test make drop-datahub"
+    docker-compose exec -T migrate bash -c "cd postgres && env ENV=develop make migrate-datahub"
+    docker-compose exec -T migrate bash -c "cd postgres && env ENV=test make migrate-datahub"
+    docker-compose kill postgresql
+    rm -Rf ~/services/util-containers/postgresql/data/*
+    docker-compose up -d postgresql
+}
+
+
+#postgresqlの再設定
+dbdrop() {
+    docker-compose kill postgresql
+    sudo rm -Rf util-containers/postgresql/data
+    docker-compose up -d postgresql
+}
+
+dbdelete() {
+    docker-compose kill postgresql
+    docker-compose up -d postgresql
+}
+
+watchlimit() {
+    echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf
+    sudo sysctl -p
+}
+
+#gitの差分をリストする
+git-diff-with-abs-path() {
+    local path
+
+    path=$(git rev-parse --show-toplevel) &&
+    git add -n .;git diff --name-only "$@" | sed "s,^,$path/,"
+}
+
+#gitの差分をリストする
+git-diff-with-abs-path-status() {
+    local path tab=$'\t'
+
+    path=$(git rev-parse --show-toplevel) &&
+    git add -n .;git diff --name-status "$@" | sed "s,$tab,$tab$path/,"
+}
+
+
+#schemaのmodifeid fileにformatする
+#File Format Schema
+ffs() {
+    cd ~/services/packages/schema
+    git-diff-with-abs-path | grep -e \.yml$ | xargs -t node_modules/.bin/prettier --write --single-quote=true
+    cd -
+}
+
+#schemaのmodifeid file確認
+#File Modified Schema
+fms() {
+    cd ~/services/packages/schema
+    git-diff-with-abs-path | grep -e \.yml$
+    cd -
+}
+
+# webapp-medicalの修正差分に対してlintをかける
+wmlint() {
+    cd ~/services/packages/webapp/medical
+
+    # NODE_OPTIONSを増やさないとlintがエラーを吐く
+    NODE_OPTIONS="--max-old-space-size=4096"
+
+    DIFF=`git-diff-with-abs-path | grep -e \/home\/indigo\/services\/packages\/webapp\/medical | grep -e \.ts$ -e \.tsx$ -e \.tsx\'$ -e \.ts\'$ | sed -e "s/'//g"  -e "s/^add /\/home\/indigo\/services\//g"`
+
+
+    if [ "$DIFF" = "" ]; then
+        echo "packages/webapp/medicalに差分がありません"
+    else
+        COMMAND=${NODE_OPTIONS} yarn lint ${DIFF}
+        echo $COMMAND
+    fi
+
+    cd -
+}
+
+#Web Medicalのmodifeid fileにformatする
+#File Format Web Medical
+ffwm() {
+    cd ~/services/packages/webapp
+    git-diff-with-abs-path | grep -e \.ts$ -e \.tsx$ -e \.tsx\'$ -e \.ts\'$ | sed -e "s/'//g"  -e "s/^add /\/home\/indigo\/services\//g"| xargs -t node_modules/.bin/prettier --write --single-quote=true
+    cd -
+}
+
+#Web Medicalのmodifeid file確認
+#File Modified Web Medical
+fmwm() {
+    cd ~/services/packages/webapp
+    git-diff-with-abs-path | grep -e \.ts$ -e \.tsx$ -e \.tsx\'$ -e \.ts\'$ | sed -e "s/'//g"  -e "s/^add /\/home\/indigo\/services\//g"
+    cd -
+}
+
+#Api Medicalのmodifeid fileにformatする
+#File Format Api Medical
+fmam() {
+    cd ~/services/packages/api
+    git-diff-with-abs-path | grep -e \.ts$ -e \.go$
+    cd -
+}
+
+#Api Medicalのmodifeid file確認
+#File Modified Api Medical
+ffam() {
+    cd ~/services/packages/api
+    git-diff-with-abs-path | grep -e \.ts$ -e \.go$ | xargs -t node_modules/.bin/prettier --write --single-quote=true
+    cd -
+}
+
+
+#orca server
+#使い方 orcap playground one
+orcap() {
+  facilityId=${1:-playground}
+  tenantId=${2:-one}
+  docker-compose run --rm api-receipt bash -c "cd receipt/workers/pushclient/ && SKIP_CALL_FACILITY=yes FACILITY_ID=$facilityId TENANT_ID=$tenantId go run ./..."
+}
+
+#orca client
+#使い方 orcac playground one
+orcac() {
+  facilityId=${1:-playground}
+  tenantId=${2:-one}
+  docker-compose run --rm api-medical bash -c "cd medical/workers/pubsubclient/ && SKIP_CALL_FACILITY=yes TENANT_ID=$tenantId FACILITY_ID=$facilityId go run main.go task.go"
+}
+
+
+#datahubにinsert 先にsqlを用意してください->makeDataHubSql
+insertDataHub() {
+    array=($(find  ~/services/packages/api/datahub/cmd/initialdata/out -name "*.sql"))
+    for obj in "${array[@]}"; do
+        PGPASSWORD=password psql -h localhost -w -U postgres develop-datahub < $obj
+    done
+}
+
+insertTestDataHub() {
+    array=($(find  ~/services/packages/api/datahub/cmd/initialdata/out -name "*.sql"))
+    for obj in "${array[@]}"; do
+        PGPASSWORD=password psql -h localhost -w -U postgres test-datahub < $obj
+    done
+}
+
+#datahubにinsertするsqlを生成
+makeDataHubSql() {
+    spreadsheetId=${1:-1fEtTVl6EfPNUMt_1XhSzwXNnLSfCiiUsGol6LL6tHzQ}
+    cd ~/services/packages/api/datahub/cmd/initialdata
+    yes | rm main_test.go
+    mkdir -p out
+    #ENV=develop go run *.go sql --output=out --spreadsheet=$spreadsheetId
+    GOOGLE_APPLICATION_CREDENTIALS=../../../../../config/build/gcp.develop.json ENV=develop go run *.go sql --output=out --spreadsheet=$spreadsheetId
+    cd -
+}
+
+#universalで使用するdatahubのモデルを生成
+uni-add-datahub-model(){
+    cd ~/services/packages/universal/
+    rm -rf ./datahub/models/*
+    node ~/services/packages/universal/node_modules/sequelize-auto/bin/sequelize-auto -h postgresql.indigo.test -d develop-datahub -u postgres -x password -p 5432  --dialect postgres -c -o "./datahub/models" -l ts
+    bash ./datahub/fixModel.sh
+    cd -
+}
+
+#universalで使用するmedicalのモデルを生成
+uni-add-medical-model(){
+    cd ~/services/packages/universal/
+    rm -rf ./medical/models/*
+    node ~/services/packages/universal/node_modules/sequelize-auto/bin/sequelize-auto -h postgresql.indigo.test -d develop-medical -u postgres -x password -p 5432  --dialect postgres -c -o "./medical/models" -l ts
+    bash ./medical/fixModel.sh
+    cd -
+}
+
+
+#datahubにinsertするsqlを生成して挿入まで一気にします
+idh() {
+  rm -Rf ~/services/packages/api/datahub/cmd/initialdata/out
+  docker-compose run --rm migrate bash -c "make migrate"
+  makeDataHubSql $1
+  uni-add-datahub-model
+  uni-add-medical-model
+  insertDataHub
+  insertDataHub
+  insertDataHub
+  insertDataHub
+  insertDataHub
+  insertTestDataHub
+  insertTestDataHub
+  insertTestDataHub
+  insertTestDataHub
+  insertTestDataHub
+}
+
+#web medicalに関係無いdockerを落として開発を軽くします
+dstop() {
+    docker stop console.indigo.test
+    docker stop elasticsearch.indigo.test
+    docker stop kibana.indigo.test
+    docker stop medical-api.indigo
+    docker stop medical.indigo.test
+    docker stop postgresql.indigo.test
+    docker stop proxy.indigo.test
+    docker stop redis.indigo.test
+}
+
+#web medicalに関係無いdockerを起動
+dstart() {
+    docker start console.indigo.test
+    docker start elasticsearch.indigo.test
+    docker start kibana.indigo.test
+    docker start medical-api.indigo
+    docker start medical.indigo.test
+    docker start postgresql.indigo.test
+    docker start proxy.indigo.test
+    docker start redis.indigo.test
+}
+
+# seeder一括投入
+add-seed-api() {
+    CSV_FILE=$1
+    ~/services/packages/universal/indigo-medical
+    for line in `cat ${CSV_FILE}`
+    do
+        column1=$(echo ${line} | cut -d , -f 1)
+        column2=$(echo ${line} | cut -d , -f 2)
+        hygen seed api --componentName ${column1} --apiName ${column2}
+    done
+    cd -       
+}
+
+# seedデータ一括投入
+add-seed-data() {
+    CSV_FILE=$1
+    ~/services/packages/universal/indigo-medical
+    for line in `cat ${CSV_FILE}`
+    do
+        column1=$(echo ${line} | cut -d , -f 1)
+        column2=$(echo ${line} | cut -d , -f 2)
+        hygen seed data --componentNamespace ${column1} --componentName ${column2}
+    done
+    cd -       
+}
+
+medical-up () {
+  ~/services/packages/universal
+  docker compose up -d
+  cd -
+}
+
+medical-stop () {
+  ~/services/packages/universal
+  docker compose stop
+  cd -
+}
+
+medical-utils () {
+  docker exec -it universal-indigo-medical-web-utils /bin/ash
+}
+
+medical-logic () {
+  docker exec -it universal-indigo-medical-web-logic /bin/ash
+}
+
+medical-component () {
+  docker exec -it universal-indigo-medical-web-component /bin/ash
+}
+
+
+medical-api () {
+  docker exec -it universal-indigo-medical-web-api /bin/ash
+}
+
+
+ifix () {
+  drall
+  dbdelete
+  gfix
+  drall
+  sc
+}
+
+servers=(
+  "api"
+  "console"
+  "datahub-api"
+  "designsystem"
+  "elasticsearch"
+  "kibana"
+  "medical"
+  "migrate"
+  "orca"
+  "postgresql"
+  "proxy"
+  "receipt"
+  "redis"
+  "universal"
+)
+
+drall () {
+  for server in "${servers[@]}" ; do
+    dr $server
+  done
+}
+
+com() {
+    cd ~
+    sudo chown indigo:indigo -R $1
+    cd -
+}
+
+ul() {
+  docker logs universal.indigo.test -f
+}
+
+
+#各パッケージでbuildして生成したファイルをwebapp-medicalにコピー
+wmbundle() {
+    cd ~/services/packages/schema
+    echo 'indigo' | sudo -S chown indigo:indigo -R ./build
+    echo 'indigo' | sudo -S chown indigo:indigo -R /home/indigo/services/packages/schema/.download
+    yarn
+    make build
+    # ファイルの有無チェック
+    if ls build/*.ts > /dev/null 2>&1; then
+        echo "Schema no file. Please check error log."
+        return
+    fi
+    cd -
+    cd ~/services/packages/translation
+    echo 'indigo' | sudo -S chown indigo:indigo -R ./build
+    yarn
+    make build
+    # ファイルの有無チェック
+    if [ ! -d "build/medical-webapp" ]; then
+        echo "Translation no file. Please check error log."
+        return
+    fi
+    cd -
+    cd ~/services/packages/webapp/medical
+    echo 'indigo' | sudo -S chown indigo:indigo -R ./src
+    yarn
+    make bundle
+    cd -
+}
+
+#### Master 更新関連
+get-sqldump(){
+wget "https://drive.google.com/uc?export=download&id=1yeh7W2M1rTxhfJdeWW4u7Olt8Znni41O" -O $1
+}
+### sandbox-datahubのデータを取得
+get-sandbox-sqldump(){
+wget "https://drive.google.com/uc?export=download&id=1_HPjJoTAm-PebDb2AOfU_kAUSqsWBYXb" -O indigo_sandbox_datahub.dump
+}
+#DB:develop-datahubを削除/再作成
+reset-datahub(){
+    dr postgresql
+    sleep 10
+    PGPASSWORD=password psql -h postgresql.indigo.test -p 5432 -w  -U postgres -c "drop database \"develop-datahub\";"
+    sleep 3
+    PGPASSWORD=password psql -h postgresql.indigo.test -p 5432 -w  -U postgres -c "create database \"develop-datahub\";"
+    sleep 3
+    migrate
+}
+#医療機関ＩＤ(medical-institution-id)を修正してからデータを投入する
+import-sandbox-datahub(){
+    sed -i -e "s/c8jgktc8ve50394fkitg/fhir/g" ./indigo_sandbox_datahub.dump
+    PGPASSWORD=password psql -h postgresql.indigo.test -p 5432 -w  -U postgres  -d develop-datahub -f ./indigo_sandbox_datahub.dump   
+}
+#初期ユーザー(admin)とfacilityの紐付けデータを登録する
+update-medical-staff(){
+PGPASSWORD=password psql -h localhost -w -U postgres develop-datahub -c "INSERT INTO medical_staff (id, member_id, medical_institution_id, part_timer, department_id, position_id, job_category_id, doctor_license_no, narcotics_practitioner_no, social_insurance_doctor_no, national_health_insurance_doctor_no, mental_health_designated_doctor_no, short_name, kana_short_name, supervising_doctor_id, delegate_password, delegate_password_limit_date, active_from, active_until, created_by, created_at, updated_by, updated_at, orca_staff_no) VALUES ('c8tajl7525mennpni36g', 'btmplsr9anvi0lg17g3g', 'fhir', 0, '', '', '1', '', '', '', '', '', '', '', '', '', null, '2022-01-01 03:00:00.000000', null, 'btmplsr9anvi0lg17g3g', '2022-03-23 05:02:12.134082', null, '2022-03-23 05:02:12.134082', '');"    
+}
+#datahubをsandboxと同じデータにそろえる
+create-sandbox-db(){
+    reset-datahub
+    get-sandbox-sqldump
+    import-sandbox-datahub
+    update-medical-staff
+    yes | rm ./indigo_sandbox_datahub.dump
+}
+#### Master 更新関連
+
+bweb() {
+	cd ~/services
+	docker-compose build proxy
+	docker-compose build webapp-medical
+	docker-compose build webapp-tenant
+	docker-compose build schema
+	docker-compose build translation
+	cd -
+}
+
+uweb() {
+	cd ~/services
+	docker-compose up -d proxy
+	docker-compose up -d webapp-medical
+	docker-compose up -d webapp-tenant
+	docker-compose up -d schema
+	docker-compose up -d translation
+	cd -
+}
+
+bapi() {
+	cd ~/services
+	docker-compose build api-tenant
+	docker-compose build api-medical
+	docker-compose build api-datahub
+	docker-compose build universal
+	docker-compose build elasticsearch
+	docker-compose build kibana
+	docker-compose build postgresql
+	docker-compose build redis
+	cd -
+}
+
+uapi() {
+	cd ~/services
+	docker-compose up -d api-tenant
+	docker-compose up -d api-medical
+	docker-compose up -d api-datahub
+	docker-compose up -d universal
+	docker-compose up -d elasticsearch
+	docker-compose up -d kibana
+	docker-compose up -d postgresql
+	docker-compose up -d redis
+	cd -
+}
+
+bboth() {
+	bapi
+	bweb
+}
+
+uboth() {
+	uapi
+	uweb
+}
+
+up() {
+	bboth
+	uboth
+}
+
+LONG_JOB_TH=60 # 1min
+function command_start {
+    timer=${timer:-${SECONDS}}
+}
+
+function command_exit {
+    elapsed_seconds=$((SECONDS - timer))
+
+    if [ $elapsed_seconds -ge $LONG_JOB_TH ] ; then
+        (TZ=UTC0 printf 'elapsed time : %(%H:%M:%S)T\a\n' "$elapsed_seconds")
+    fi
+
+    unset timer
+}
+
+trap 'command_start' DEBUG
+PROMPT_COMMAND="command_exit"

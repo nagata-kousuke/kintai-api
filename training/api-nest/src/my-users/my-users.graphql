@@ -1,0 +1,27 @@
+type MyUser {
+  id: ID!
+  username: String!
+  password: String!
+  created_at: Date!
+  updated_at: Date!
+}
+
+input CreateMyUserInput {
+  # Example field (placeholder)
+  exampleField: Int
+}
+
+input UpdateMyUserInput {
+  id: Int!
+}
+
+type Query {
+  myUsers: [MyUser]!
+  myUser(id: Int!): MyUser
+}
+
+type Mutation {
+  createMyUser(createMyUserInput: CreateMyUserInput!): MyUser!
+  updateMyUser(updateMyUserInput: UpdateMyUserInput!): MyUser!
+  removeMyUser(id: Int!): MyUser
+}
